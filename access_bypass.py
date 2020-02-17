@@ -40,7 +40,7 @@ server = 'ldap://localhost:389'
 connect = ldap.initialize(server)
 connect.simple_bind_s("cn=admin,dc=vuln,dc=com","secret")
 
-# first we add the login informations of a test user
+# first we add the login information of a test user
 dn="cn=user1,dc=vuln,dc=com"
 attrs = {}
 attrs['objectclass'] = ['person']
