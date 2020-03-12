@@ -36,4 +36,4 @@ BASE dc=vuln, dc=com
 
 To run the tool, open a terminal, go to the root directory of the git repository and use the command :
 
-python2 access_bypass.py
+./oracle_ldap.sh <injection>
