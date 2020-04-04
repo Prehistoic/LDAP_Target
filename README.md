@@ -32,8 +32,16 @@ TIMELIMIT 0 <br />
 DEREF never <br />
 BASE dc=vuln, dc=com
 
+### Installing python-ldap
+
+- sudo apt-get install build-essential python3-dev python2.7-dev \
+    libldap2-dev libsasl2-dev slapd ldap-utils python-tox \
+    lcov valgrind
+- python -m pip install python-ldap
+
+
 ## Running the tool
 
 To run the tool, open a terminal, go to the root directory of the git repository and use the command :
 
-./oracle_ldap.sh <injection>
+./oracle_ldap.sh [injection]
