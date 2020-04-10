@@ -2,7 +2,6 @@
 
 import sys
 import ldap
-import ldap.modlist as modlist
 
 def attempt_connect(searchFilter,connect):
     baseDN = "dc=vuln, dc=com"
@@ -11,6 +10,7 @@ def attempt_connect(searchFilter,connect):
     result_set = []
     try:
     	ldap_result_id = connect.search(baseDN, searchScope, searchFilter, retrieveAttributes)
+    	result = 0
     	while 1:
     		result_type, result_data = connect.result(ldap_result_id, 0)
     		if (result_data == []):
@@ -18,9 +18,8 @@ def attempt_connect(searchFilter,connect):
     		else:
     			if result_type == ldap.RES_SEARCH_ENTRY:
     				result_set.append(result_data)
-        result = 0
     except ldap.LDAPError, e:
-    	result = 1
+    	result = 180
     print("")
     if result_set == []:
         print("ERROR ! Access denied !")
@@ -75,7 +74,7 @@ def main(argv):
     try:
     	connect.delete_s(deleteDN)
     except ldap.LDAPError, e:
-    	print e
+    	print(e)
     connect.unbind_s()
     sys.exit(result)
 
