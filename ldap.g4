@@ -2,15 +2,13 @@ grammar ldap;
 
 axiom: s EOF;
 
-s: filter
+s: filter;
 
 filter: '(' filtercomp ')';
 
-filterlist: filter+;
-
 filtercomp: 
-  '&' filterlist 
-  | '|' filterlist
+  '&' filter filter
+  | '|' filter filter
   | '!' filter
   | item
   ;
