@@ -2,15 +2,22 @@ grammar ldap;
 
 axiom: s EOF;
 
-s: '(' filtercomp s ')' |  ;
+s: filter
 
-filtercomp: '&' | '|' | '!' | item;
+filter: '(' filtercomp ')';
 
-item: attr filtertype something;
+filterlist: filter+;
+
+filtercomp: 
+  '&' filterlist 
+  | '|' filterlist
+  | '!' filter
+  | item
+  ;
+
+item: attr '=' something;
 
 attr: 'cn' | 'dn' | 'ou' | 'objectClass' | TEXT;
-
-filtertype: '=';
 
 something: '*' | '*' TEXT | TEXT '*' | '*' TEXT '*' | NUMBER;
 
