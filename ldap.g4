@@ -6,8 +6,10 @@ s: filter;
 
 filter: '(' filtercomp ')';
 
-filtercomp: 
-  '&' filter filter
+filtercomp:
+  '&'
+  | '|'
+  | '&' filter filter
   | '|' filter filter
   | '!' filter
   | item
