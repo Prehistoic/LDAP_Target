@@ -17,7 +17,7 @@ item: attr '=' something;
 
 attr: 'cn' | 'dn' | 'ou' | 'objectClass' | TEXT;
 
-something: '*' | '*' TEXT | TEXT '*' | '*' TEXT '*' | NUMBER;
+something: '*' | '*' TEXT | TEXT '*' | '*' TEXT '*' | TEXT | NUMBER;
 
 NUMBER: DIGIT+;
 TEXT: CHAR+;
