@@ -2,6 +2,7 @@
 
 import sys
 import ldap
+import ldap.modlist as modlist
 
 def attempt_connect(searchFilter,connect):
     baseDN = "dc=vuln, dc=com"
@@ -10,7 +11,6 @@ def attempt_connect(searchFilter,connect):
     result_set = []
     try:
     	ldap_result_id = connect.search(baseDN, searchScope, searchFilter, retrieveAttributes)
-    	result = 0
     	while 1:
     		result_type, result_data = connect.result(ldap_result_id, 0)
     		if (result_data == []):
@@ -18,6 +18,7 @@ def attempt_connect(searchFilter,connect):
     		else:
     			if result_type == ldap.RES_SEARCH_ENTRY:
     				result_set.append(result_data)
+        result = 0
     except ldap.LDAPError, e:
     	result = 180
     print("")
@@ -32,10 +33,10 @@ def main(argv):
 
     # little explanation of the tool
     print("Welcome to this access bypass training tool !")
-    print("The expected credentials are : login=Bob and password=easytoguess")
+    print("The expected credentials are : login=Bob and password=hardtoguess")
     print("We are looking for a way to gain access to the system without knowing the password !")
     print("Try using these credentials to witness an AND LDAP injection vulnerability : ")
-    print("  -  login=Bob)(|(& and password=123)")
+    print("  -  login=* and password=*)(&")
     print("")
 
     server = 'ldap://localhost:389'
@@ -48,23 +49,22 @@ def main(argv):
     attrs['objectclass'] = ['person']
     attrs['cn'] = 'user1'
     attrs['sn'] = 'Bob'
-    attrs['description'] = 'easytoguess'
+    attrs['description'] = 'hardtoguess'
     ldif = modlist.addModlist(attrs)
     connect.add_s(dn,ldif)
 
     connect.unbind_s()
 
-    login = argv
-    password = "123)"
+    login = "*"
+    password = argv
 
     # then we try to find a match in the LDAP DIT
     connect = ldap.initialize(server)
 
-    # We escape all * characters
-    print("We escape all * characters")
-    safelogin = login.replace('*','\\*')
-    safepassword = password.replace('*','\\*')
-    searchFilter = "(&(sn="+safelogin+")(description="+safepassword+"))"
+    # We escape if password = *
+    if(password == '*'):
+	password = '\\*'
+    searchFilter = "(&(sn="+login+")(description="+password+"))"
     print("Filter used : "+searchFilter)
     result = attempt_connect(searchFilter,connect)
 
@@ -74,9 +74,9 @@ def main(argv):
     try:
     	connect.delete_s(deleteDN)
     except ldap.LDAPError, e:
-    	print(e)
+    	print e
     connect.unbind_s()
-    sys.exit(result)
+    exit(result)
 
 if __name__ == "__main__":
     main(sys.argv[1])

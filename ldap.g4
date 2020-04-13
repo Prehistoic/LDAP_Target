@@ -4,16 +4,9 @@ axiom: s EOF;
 
 s: filtre;
 
-filtre: '(' filtercomp ')';
+filtre: '(' filtrecomp ')';
 
-filtercomp:
-  '&'
-  | '|'
-  | '&' filtre filtre
-  | '|' filtre filtre
-  | '!' filtre
-  | item
-  ;
+filtrecomp: '&' filtre* | '|' filtre* | '!' filtre | item;
 
 item: attr '=' something;
 
