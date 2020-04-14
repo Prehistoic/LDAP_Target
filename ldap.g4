@@ -10,7 +10,7 @@ filtrecomp: '&' filtre* | '|' filtre* | '!' filtre | item;
 
 item: attr '=' something;
 
-attr: 'cn' | 'dn' | 'ou' | 'objectClass' | TEXT;
+attr: 'cn' | 'dn' | 'ou' | 'objectclass' | TEXT;
 
 something: '*' | '*' TEXT | TEXT '*' | '*' TEXT '*' | TEXT | NUMBER;
 
