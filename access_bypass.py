@@ -55,7 +55,7 @@ def main(argv):
 
     connect.unbind_s()
 
-    login = "*"
+    login = "Bob"
     password = argv
 
     # then we try to find a match in the LDAP DIT
