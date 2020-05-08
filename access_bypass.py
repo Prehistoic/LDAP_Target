@@ -29,7 +29,7 @@ def attempt_connect(searchFilter,connect,domain_name,domain_code):
     print("")
     return result
 
-def main(user_server,domain,injection):
+def main(user_server,domain,user_login,injection):
 
     # little explanation of the tool
     print("Welcome to this access bypass training tool !")
@@ -47,7 +47,7 @@ def main(user_server,domain,injection):
 
     connect = ldap.initialize(server)
 
-    login = "Bob"
+    login = user_login
     password = injection
     # We escape if password = *
     if(password == '*'):
@@ -60,6 +60,6 @@ def main(user_server,domain,injection):
 
 if __name__ == "__main__":
     if(len(sys.argv) == 4):
-        main(sys.argv[1],sys.argv[2],sys.argv[3])
+        main(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
-        print("Usage: python access_bypass.py [server] [domain] [injection]")
+        print("Usage: python access_bypass.py [server] [domain] [login] [injection]")
