@@ -39,13 +39,22 @@ BASE dc=vuln, dc=com
     lcov valgrind
 - python -m pip install python-ldap
 
+### Setting up the experiment
+
+To test the tool you can add a user to the LDAP DIT by using this command :
+
+python setup.py [server] [domain] [domain_login] [domain_password]
+
+If you followed the configuration above :
+
+python setup.py "ldap://localhost:389" "vuln.com" "admin" "secret"
 
 ## Running the tool
 
 To run the tool, open a terminal, go to the root directory of the git repository and use the command :
 
-python access_bypass.py [server] [domain] [domain_login] [domain_password] [injection]
+python access_bypass.py [server] [domain] [login] [injection]
 
 If you followed the configuration above :
 
-python access_bypass.py "ldap://localhost:389" "vuln.com" admin secret [injection]
+python access_bypass.py "ldap://localhost:389" "vuln.com" "Bob" [injection]
