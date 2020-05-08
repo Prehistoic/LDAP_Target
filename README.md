@@ -44,4 +44,8 @@ BASE dc=vuln, dc=com
 
 To run the tool, open a terminal, go to the root directory of the git repository and use the command :
 
-./oracle_ldap.sh [injection]
+python access_bypass.py [server] [domain] [domain_login] [domain_password] [injection]
+
+If you followed the configuration above :
+
+python access_bypass.py "ldap://localhost:389" "vuln.com" admin secret [injection]
