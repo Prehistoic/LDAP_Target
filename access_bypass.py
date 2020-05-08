@@ -4,8 +4,8 @@ import sys
 import ldap
 import ldap.modlist as modlist
 
-def attempt_connect(searchFilter,connect):
-    baseDN = "dc=vuln, dc=com"
+def attempt_connect(searchFilter,connect,domain_name,domain_code):
+    baseDN = "dc="+domain_name+", dc="+domain_code
     searchScope = ldap.SCOPE_SUBTREE
     retrieveAttributes = None
     result_set = []
@@ -29,7 +29,7 @@ def attempt_connect(searchFilter,connect):
     print("")
     return result
 
-def main(argv):
+def main(user_server,domain,user_login,user_password,injection):
 
     # little explanation of the tool
     print("Welcome to this access bypass training tool !")
@@ -39,12 +39,16 @@ def main(argv):
     print("  -  login=* and password=*)(&")
     print("")
 
-    server = 'ldap://localhost:389'
+    server = user_server
     connect = ldap.initialize(server)
-    connect.simple_bind_s("cn=admin,dc=vuln,dc=com","secret")
+    domain_list = domain.split(".")
+    domain_name = domain_list[0]
+    domain_code = domain_list[1]
+    login_credentials = "cn=" + user_login + ",dc=" + domain_name + ",dc=" + domain_code
+    connect.simple_bind_s(login_credentials,user_password)
 
     # first we add the login information of a test user
-    dn="cn=user1,dc=vuln,dc=com"
+    dn="cn=user1,dc="+domain_name+",dc="+domain_code
     attrs = {}
     attrs['objectclass'] = ['person']
     attrs['cn'] = 'user1'
@@ -56,7 +60,7 @@ def main(argv):
     connect.unbind_s()
 
     login = "Bob"
-    password = argv
+    password = injection
 
     # then we try to find a match in the LDAP DIT
     connect = ldap.initialize(server)
@@ -66,11 +70,11 @@ def main(argv):
 	password = '\\*'
     searchFilter = "(&(sn="+login+")(description="+password+"))"
     print("Filter used : "+searchFilter)
-    result = attempt_connect(searchFilter,connect)
+    result = attempt_connect(searchFilter,connect,domain_name,domain_code)
 
     # we clear the LDAP database for future use !
-    connect.simple_bind_s("cn=admin,dc=vuln,dc=com","secret")
-    deleteDN = "cn=user1, dc=vuln, dc=com"
+    connect.simple_bind_s("cn=admin,dc="+domain_name+",dc="+domain_code,user_password)
+    deleteDN = "cn=user1, dc="+domain_name+", dc="+domain_code
     try:
     	connect.delete_s(deleteDN)
     except ldap.LDAPError, e:
@@ -79,4 +83,7 @@ def main(argv):
     exit(result)
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    if(len(sys.argv) == 6):
+        main(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
+    else:
+        print("Usage: python access_bypass.py [server] [domain] [domain_login] [domain_password] [injection]")
